@@ -1,0 +1,544 @@
+<html>
+    <head>
+        <title>
+            Node Pocket!!
+        </title>
+        <script src="/js/jquery.js">
+        </script>
+        <script>
+            item_type = {
+			"-2":"Egg 2km",
+			"-5":"Egg 5km",
+			"-10":"Egg 10km",
+		    "0": "Unknown",
+
+		    "1": "Pokeball",
+		    "2": "Greatball",
+		    "3": "Ultraball",
+		    "4": "Masterball",
+
+		    "101": "Potion",
+		    "102": "Super Potion",
+		    "103": "Hyper Potion",
+		    "104": "Max Potion",
+
+		    "201": "Revive",
+		    "202": "Max Revive",
+
+		    "301": "Lucky Egg",
+
+		    "401": "Incense",
+		    "402": "Spicy Incense",
+		    "403": "Cool Incense",
+		    "404": "Floral Incense",
+
+		    "501": "Troy Disk",
+
+		    "602": "X Attack",
+		    "603": "X Defense",
+		    "604": "X Miracle",
+
+		    "701": "Razz Berry",
+		    "702": "Bluk Berry",
+		    "703": "Nanab Berry",
+		    "704": "Wepar Berry",
+		    "705": "Pinap Berry",
+
+		    "801": "Special Camera",
+
+		    "901": "Incubator (Unlimited)",
+		    "902": "Incubator",
+
+		    "1001": "Pokemon Storage Upgrade",
+		    "1002": "Item Storage Upgrade"
+		}
+        </script>
+        <script>
+            move_type = {
+				"0":"MOVE_UNSET",
+				"1":"THUNDER_SHOCK",
+				"2":"QUICK_ATTACK",
+				"3":"SCRATCH",
+				"4":"EMBER",
+				"5":"VINE_WHIP",
+				"6":"TACKLE",
+				"7":"RAZOR_LEAF",
+				"8":"TAKE_DOWN",
+				"9":"WATER_GUN",
+				"10":"BITE",
+				"11":"POUND",
+				"12":"DOUBLE_SLAP",
+				"13":"WRAP",
+				"14":"HYPER_BEAM",
+				"15":"LICK",
+				"16":"DARK_PULSE",
+				"17":"SMOG",
+				"18":"SLUDGE",
+				"19":"METAL_CLAW",
+				"20":"VICE_GRIP",
+				"21":"FLAME_WHEEL",
+				"22":"MEGAHORN",
+				"23":"WING_ATTACK",
+				"24":"FLAMETHROWER",
+				"25":"SUCKER_PUNCH",
+				"26":"DIG",
+				"27":"LOW_KICK",
+				"28":"CROSS_CHOP",
+				"29":"PSYCHO_CUT",
+				"30":"PSYBEAM",
+				"31":"EARTHQUAKE",
+				"32":"STONE_EDGE",
+				"33":"ICE_PUNCH",
+				"34":"HEART_STAMP",
+				"35":"DISCHARGE",
+				"36":"FLASH_CANNON",
+				"37":"PECK",
+				"38":"DRILL_PECK",
+				"39":"ICE_BEAM",
+				"40":"BLIZZARD",
+				"41":"AIR_SLASH",
+				"42":"HEAT_WAVE",
+				"43":"TWINEEDLE",
+				"44":"POISON_JAB",
+				"45":"AERIAL_ACE",
+				"46":"DRILL_RUN",
+				"47":"PETAL_BLIZZARD",
+				"48":"MEGA_DRAIN",
+				"49":"BUG_BUZZ",
+				"50":"POISON_FANG",
+				"51":"NIGHT_SLASH",
+				"52":"SLASH",
+				"53":"BUBBLE_BEAM",
+				"54":"SUBMISSION",
+				"55":"KARATE_CHOP",
+				"56":"LOW_SWEEP",
+				"57":"AQUA_JET",
+				"58":"AQUA_TAIL",
+				"59":"SEED_BOMB",
+				"60":"PSYSHOCK",
+				"61":"ROCK_THROW",
+				"62":"ANCIENT_POWER",
+				"63":"ROCK_TOMB",
+				"64":"ROCK_SLIDE",
+				"65":"POWER_GEM",
+				"66":"SHADOW_SNEAK",
+				"67":"SHADOW_PUNCH",
+				"68":"SHADOW_CLAW",
+				"69":"OMINOUS_WIND",
+				"70":"SHADOW_BALL",
+				"71":"BULLET_PUNCH",
+				"72":"MAGNET_BOMB",
+				"73":"STEEL_WING",
+				"74":"IRON_HEAD",
+				"75":"PARABOLIC_CHARGE",
+				"76":"SPARK",
+				"77":"THUNDER_PUNCH",
+				"78":"THUNDER",
+				"79":"THUNDERBOLT",
+				"80":"TWISTER",
+				"81":"DRAGON_BREATH",
+				"82":"DRAGON_PULSE",
+				"83":"DRAGON_CLAW",
+				"84":"DISARMING_VOICE",
+				"85":"DRAINING_KISS",
+				"86":"DAZZLING_GLEAM",
+				"87":"MOONBLAST",
+				"88":"PLAY_ROUGH",
+				"89":"CROSS_POISON",
+				"90":"SLUDGE_BOMB",
+				"91":"SLUDGE_WAVE",
+				"92":"GUNK_SHOT",
+				"93":"MUD_SHOT",
+				"94":"BONE_CLUB",
+				"95":"BULLDOZE",
+				"96":"MUD_BOMB",
+				"97":"FURY_CUTTER",
+				"98":"BUG_BITE",
+				"99":"SIGNAL_BEAM",
+				"100":"X_SCISSOR",
+				"101":"FLAME_CHARGE",
+				"102":"FLAME_BURST",
+				"103":"FIRE_BLAST",
+				"104":"BRINE",
+				"105":"WATER_PULSE",
+				"106":"SCALD",
+				"107":"HYDRO_PUMP",
+				"108":"PSYCHIC",
+				"109":"PSYSTRIKE",
+				"110":"ICE_SHARD",
+				"111":"ICY_WIND",
+				"112":"FROST_BREATH",
+				"113":"ABSORB",
+				"114":"GIGA_DRAIN",
+				"115":"FIRE_PUNCH",
+				"116":"SOLAR_BEAM",
+				"117":"LEAF_BLADE",
+				"118":"POWER_WHIP",
+				"119":"SPLASH",
+				"120":"ACID",
+				"121":"AIR_CUTTER",
+				"122":"HURRICANE",
+				"123":"BRICK_BREAK",
+				"124":"CUT",
+				"125":"SWIFT",
+				"126":"HORN_ATTACK",
+				"127":"STOMP",
+				"128":"HEADBUTT",
+				"129":"HYPER_FANG",
+				"130":"SLAM",
+				"131":"BODY_SLAM",
+				"132":"REST",
+				"133":"STRUGGLE",
+				"134":"SCALD_BLASTOISE",
+				"135":"HYDRO_PUMP_BLASTOISE",
+				"136":"WRAP_GREEN",
+				"137":"WRAP_PINK",
+				"200":"FURY_CUTTER_FAST",
+				"201":"BUG_BITE_FAST",
+				"202":"BITE_FAST",
+				"203":"SUCKER_PUNCH_FAST",
+				"204":"DRAGON_BREATH_FAST",
+				"205":"THUNDER_SHOCK_FAST",
+				"206":"SPARK_FAST",
+				"207":"LOW_KICK_FAST",
+				"208":"KARATE_CHOP_FAST",
+				"209":"EMBER_FAST",
+				"210":"WING_ATTACK_FAST",
+				"211":"PECK_FAST",
+				"212":"LICK_FAST",
+				"213":"SHADOW_CLAW_FAST",
+				"214":"VINE_WHIP_FAST",
+				"215":"RAZOR_LEAF_FAST",
+				"216":"MUD_SHOT_FAST",
+				"217":"ICE_SHARD_FAST",
+				"218":"FROST_BREATH_FAST",
+				"219":"QUICK_ATTACK_FAST",
+				"220":"SCRATCH_FAST",
+				"221":"TACKLE_FAST",
+				"222":"POUND_FAST",
+				"223":"CUT_FAST",
+				"224":"POISON_JAB_FAST",
+				"225":"ACID_FAST",
+				"226":"PSYCHO_CUT_FAST",
+				"227":"ROCK_THROW_FAST",
+				"228":"METAL_CLAW_FAST",
+				"229":"BULLET_PUNCH_FAST",
+				"230":"WATER_GUN_FAST",
+				"231":"SPLASH_FAST",
+				"232":"WATER_GUN_FAST_BLASTOISE",
+				"233":"MUD_SLAP_FAST",
+				"234":"ZEN_HEADBUTT_FAST",
+				"235":"CONFUSION_FAST",
+				"236":"POISON_STING_FAST",
+				"237":"BUBBLE_FAST",
+				"238":"FEINT_ATTACK_FAST",
+				"239":"STEEL_WING_FAST",
+				"240":"FIRE_FANG_FAST",
+				"241":"ROCK_SMASH_FAST"
+		}
+        </script>
+        <style>
+            div.tab{
+			width :100%;
+			height : 40px;
+			font-size : 24;
+			text-align: center;
+			border: solid 1px;
+			background-color : lightgreen;
+		}
+		div.subtab{
+			width :24%;
+			height : 40px;
+			font-size : 24;
+			text-align: center;
+			background-color : orange;
+			display: inline-block;
+		}
+		div.poke{
+			display: inline-block;
+			width : 200px;
+			height : 160px;
+			border : 1px solid;
+		}
+		div.candy{
+			display: inline-block;
+			width : 60px;
+			height : 80px;
+			//border : 1px solid;
+		}
+        </style>
+        <script>
+            function pad(num, size) {
+			    var s = num+"";
+			    while (s.length < size) s = "0" + s;
+			    return s;
+			}
+
+			function dropItem(id,count){
+				$.ajax("/dropItem/"+id+"/"+count).done(function(data){
+					console.log(data)
+				})
+			}
+
+			function transfer(high,low){
+				
+				$("div[id_high='"+high+"'][id_low='"+low+"']").css("background-color","lightsalmon");
+				
+				
+				setTimeout(function(){
+					submit = confirm("Are you confirm to transfer")
+					if(submit){
+						$.ajax("/transferPoke/"+high+"/"+low).done(function(data){
+							alert(data)
+							$("div[id_high='"+high+"'][id_low='"+low+"']").remove()
+						})
+					}
+					$("div[id_high='"+high+"'][id_low='"+low+"']").css("background-color","");
+				},500);
+				
+			}
+			$(document).ready(function(){
+				$("div#tab_player").click(function(){
+					$("div#player").toggle(1000)
+				});
+				$("div#pokemon").hide(1000)
+				$("div#tab_pokemon").click(function(){
+					$("div#pokemon").toggle(1000)
+					$("div#sort_dt").toggle(200)
+					$("div#sort_id").toggle(200)
+					$("div#sort_iv").toggle(200)
+					$("div#sort_cp").toggle(200)
+				});
+				//$("div#egg").hide(1000)
+				$("div#tab_egg").click(function(){
+					$("div#egg").toggle(1000)
+				});
+				$("div#tab_item").click(function(){
+					$("div#item").toggle(1000)
+				});
+				$("div#dex").hide(1000)
+				$("div#tab_dex").click(function(){
+					$("div#dex").toggle(1000)
+				});
+				$("div#tab_candy").click(function(){
+					$("div#candy").toggle(1000)
+				});
+				$("div#sort_dt").click(function(){
+					createPokeTable('Date')
+				});
+				$("div#sort_id").click(function(){
+					createPokeTable('ID')
+				});
+				$("div#sort_iv").click(function(){
+					createPokeTable('IV')
+				});
+				$("div#sort_cp").click(function(){
+					createPokeTable('CP')
+				});
+			
+				$.ajax({
+					url:"/inven",
+					timeout:5000
+				}).done(function(res,err){
+					obj = JSON.parse(res)
+
+					console.log(obj)
+					createPokeTable();
+					
+
+
+
+					div = $("div#player").html(JSON.stringify(obj.stat));
+
+					div = $("div#tab_egg").html("Egg - "+obj.egg.length);
+					div = $("div#egg")
+					obj.egg.sort(function(a,b){
+						if(a.id!=null && b.id==null){
+							return 1;
+						}
+						if(b.id!=null && a.id==null){
+							return -1;
+						}
+
+						if(a.id!=null && b.id!=null){
+							return a.target - b.target
+						}
+					})
+					for( e in obj.egg){
+						div.append($("<span>").html(JSON.stringify(obj.egg[e])))
+						div.append("<br>")
+					}
+
+					div = $("div#item")
+					itemcount=0;
+					for( i in obj.item){
+						div.append(
+							$("<li>")
+
+							.append($("<img>").attr("src","/img/item/"+obj.item[i].item_id+".png")
+								.css("height","40px")
+							)
+							
+							.append(item_type[obj.item[i].item_id]+" have "+obj.item[i].count)
+							
+							.append($("<input>")
+								.attr("type","button")
+								.attr("onclick","dropItem("+obj.item[i].item_id+",1)")
+								.attr("value","drop 1")
+								.css("text-align","left")
+								)
+						)
+						itemcount += obj.item[i].count
+					}
+					div.append("Total : "+itemcount)
+					
+
+					$("div#tab_dex").html("dex - "+obj.dex.length)
+					div = $("div#dex")
+					dex_found = [];
+					for( d in obj.dex){
+						dex_found[obj.dex[d].poke_id] = true
+					}
+
+					for( i = 1 ; i <= 151 ; i++){
+						pok = $("<div>")
+						pok.addClass("poke")
+						if(dex_found[i]){
+							pok.css("background-color","lightgreen");
+						}else{
+							pok.css("background-color","gray");
+						}
+						pok.css("text-align","center")
+						pok.html( i +"<br>");
+						pok.append($("<img>").attr('src',"/img/"+i+".png").attr("width","100px"))
+						div.append(pok);
+					}
+
+					
+					div = $("div#candy")
+					div.html(obj.candy.length+"<BR>")
+					obj.candy.sort(function(a,b){
+						return (a.poke_id - b.poke_id)
+					})
+					for(c in obj.candy){
+						candy = obj.candy[c]
+						can = $("<div>")
+						can.addClass("candy")
+						//console.log(candy)
+						can.append($("<img>").attr('src',"/img/"+candy.poke_id+".png").attr("width","40px"))
+						can.append("<br>"+candy.candy);
+						div.append(can)
+					}
+
+				})
+
+
+			})
+
+			function createPokeTable(sort){
+				if(sort=="IV"){
+					obj.pokemon.sort(function(a,b){
+						//console.log(a,b);
+						return -(a.i_sum+a.cp*0.001 - b.i_sum-b.cp*0.001)
+					})
+				}else if(sort=="ID"){
+					obj.pokemon.sort(function(a,b){
+						//console.log(a,b);
+						return (a.poke_id-a.i_sum*0.001 - b.poke_id+b.i_sum*0.001)
+					})	
+				}else if(sort=="CP"){
+					obj.pokemon.sort(function(a,b){
+						//console.log(a,b);
+						return -(a.cp - b.cp)
+					})		
+				}else if(sort=="Date"){
+					obj.pokemon.sort(function(a,b){
+						//console.log(a,b);
+						if(a.getdate.high!=b.getdate.low)
+							return -(a.getdate.high - b.getdate.high)
+						return -(a.getdate.low - b.getdate.low)
+					})
+				}
+				
+				div = $("div#pokemon")
+				div.html('');
+				$("div#tab_pokemon").html("Pokemon - "+obj.pokemon.length)
+				for(p in obj.pokemon){
+						var pokemon = obj.pokemon[p]
+						var pok = $("<div>")
+						pok.addClass("poke")
+						pok.attr("id_high",pokemon.id.high)
+						pok.attr("id_low",pokemon.id.low)
+						pok.append($("<img>").attr('src',"/img/"+pokemon.poke_id+".png").attr("width","40px"))
+						pok.append(pokemon.nickname+"<br>")
+						pok.append("CP:"+pokemon.cp+" ")
+						pok.append("("+(pokemon.cp_mul*100+"").substring(0,4)+"%)")
+						pok.append("HP:"+pokemon.hp+"<br>")
+						pok.append("IA:"+pokemon.i_atk+" ")
+						pok.append("ID:"+pokemon.i_def+" ")
+						pok.append("IS:"+pokemon.i_sta+"<br>")
+						sum=pokemon.i_atk+pokemon.i_def+pokemon.i_sta
+						pok.append("SUM:"+sum+"/45 ("+(sum/45*100+"").substring(0,5)+"%)<br>")
+						pok.append($("<li>").html(move_type[pokemon.move_1]+""))
+						pok.append($("<li>").html(move_type[pokemon.move_2]+""))
+						
+						var input = $("<input>").attr("type","button").attr("value","Transfer")
+						.attr("id_high",pokemon.id.high)
+						.attr("id_low",pokemon.id.low)
+						input.click(function(){
+							console.log(this)
+							transfer(this.getAttribute("id_high"),this.getAttribute("id_low"))
+						})
+						pok.append(input)
+						// pok.append(JSON.stringify(pokemon.getdate))
+						div.append(pok)
+
+					}
+			}
+        </script>
+    </head>
+    <body>
+        <div class="tab" id="tab_player">
+            Player
+        </div>
+        <div id="player">
+        </div>
+        <div class="tab" id="tab_pokemon">
+            Pokemon
+        </div>
+        <div class="subtab" id="sort_id">
+            ID
+        </div>
+        <div class="subtab" id="sort_iv">
+            IV
+        </div>
+        <div class="subtab" id="sort_cp">
+            CP
+        </div>
+        <div class="subtab" id="sort_dt">
+            Date
+        </div>
+        <div id="pokemon">
+        </div>
+        <div class="tab" id="tab_egg">
+            Egg
+        </div>
+        <div id="egg">
+        </div>
+        <div class="tab" id="tab_item">
+            Item
+        </div>
+        <div id="item">
+        </div>
+        <div class="tab" id="tab_dex">
+            Dex
+        </div>
+        <div id="dex">
+        </div>
+        <div class="tab" id="tab_candy">
+            Candy
+        </div>
+        <div id="candy">
+        </div>
+    </body>
+</html>

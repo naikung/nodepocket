@@ -1,0 +1,324 @@
+<html>
+    <head>
+        <title>
+            Node Pocket!!
+        </title>
+        <script src="/js/jquery.js">
+        </script>
+        <script src="http://maps.googleapis.com/maps/api/js">
+        </script>
+        <script src="/js/socket.io.js">
+        </script>
+        <script>
+            item_type = {
+            "-2":"Egg 2km",
+			"-5":"Egg 5km",
+			"-10":"Egg 10km",
+		    "0": "Unknown",
+
+		    "1": "Pokeball",
+		    "2": "Greatball",
+		    "3": "Ultraball",
+		    "4": "Masterball",
+
+		    "101": "Potion",
+		    "102": "Super Potion",
+		    "103": "Hyper Potion",
+		    "104": "Max Potion",
+
+		    "201": "Revive",
+		    "202": "Max Revive",
+
+		    "301": "Lucky Egg",
+
+		    "401": "Incense",
+		    "402": "Spicy Incense",
+		    "403": "Cool Incense",
+		    "404": "Floral Incense",
+
+		    "501": "Troy Disk",
+
+		    "602": "X Attack",
+		    "603": "X Defense",
+		    "604": "X Miracle",
+
+		    "701": "Razz Berry",
+		    "702": "Bluk Berry",
+		    "703": "Nanab Berry",
+		    "704": "Wepar Berry",
+		    "705": "Pinap Berry",
+
+		    "801": "Special Camera",
+
+		    "901": "Incubator (Unlimited)",
+		    "902": "Incubator",
+
+		    "1001": "Pokemon Storage Upgrade",
+		    "1002": "Item Storage Upgrade"
+		}
+        </script>
+        <script>
+            var map;
+		var socket = io();
+		function show_console(obj){
+			$('div#console').prepend($("<li>").append(Date().substring(0,24)).append(" : ").append(obj))
+		}
+		function initialize() {
+		  var mapProp = {
+		    center:new google.maps.LatLng(13.745408833627767,100.53438663482666),
+		    zoom:5,
+		    mapTypeId:google.maps.MapTypeId.ROADMAP
+		  };
+		  map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+		  map.setZoom(18)
+		  map.addListener('rightclick', function(event) {
+			console.log("go");
+            var lat = event.latLng.lat();
+            var lng = event.latLng.lng();
+
+            if(lat&&lng){
+            	socket.emit('set coord',{lat:lat,lng:lng});
+				show_console(lat+" "+lng);
+            }
+          });
+		}
+		google.maps.event.addDomListener(window, 'load', initialize);
+	
+		$(document).ready(function(){
+			var last_near=0;
+			var mark_target=0;
+			var marker = [];
+			var CMarker=0;
+			socket.on('ford',function(data){
+				console.log('ford',data)
+				var position = new google.maps.LatLng(data.lat,data.lng);
+				if(!marker[data.id]){
+    				marker[data.id]=new google.maps.Marker({
+    				  position:position,
+    				  icon:"/img/pokestop.png"
+    				});
+                   }
+				var now = new Date()
+                   if(now.getTime() - (new Date(data.last)).getTime() < 300000){
+                       marker[data.id].icon="/img/pokestop_violet.png"
+                   }else{
+                       marker[data.id].icon="/img/pokestop.png"
+                }
+					marker[data.id].setMap(map);
+			})
+			socket.on('fordVisit',function(data){
+				show_console("Visit "+data.id)
+				marker[data.id].setMap(null)
+				marker[data.id].icon="/img/pokestop_violet.png";
+				marker[data.id].setMap(map)
+				setTimeout(function(){
+					marker[data.id].setMap(null)
+					marker[data.id].icon="/img/pokestop.png";
+					marker[data.id].setMap(map)
+				},300000)
+			})
+			socket.on('coord',function(data){
+				console.log('coord',data);
+				if(!data.lat||!data.lng)
+					return;
+				var position = new google.maps.LatLng(data.lat,data.lng);
+				if(CMarker)
+				  	CMarker.setMap(null);
+				
+				map.setCenter(position);	
+				CMarker=new google.maps.Marker({
+				  position:position,
+				  icon:{
+				  		url:"/img/human.png",
+				  		scaledSize: new google.maps.Size(50, 50)
+				  	}
+				  
+				});
+				CMarker.setMap(map);
+			})
+			socket.on('pokemonMap',function(data){
+				console.log('pokemonMap',data)
+				
+				var position = new google.maps.LatLng(data.Latitude,data.Longitude);
+				if(!marker[data.SpawnPointId]){
+    				marker[data.SpawnPointId]=new google.maps.Marker({
+    				  position:position,
+    				  icon:{
+						url : "/img/"+data.pokemon.PokemonId+".png",
+						scaledSize: new google.maps.Size(50, 50)
+					  }
+    				});
+                   }
+				marker[data.SpawnPointId].setMap(map);
+				setTimeout(function(){
+					marker[data.SpawnPointId].setMap(null);
+				},30000)
+			})
+			socket.on('pokemonWild',function(data){
+				console.log('pokemonWild',data)
+				
+				var position = new google.maps.LatLng(data.Latitude,data.Longitude);
+				if(!marker[data.SpawnPointId]){
+    				marker[data.SpawnPointId]=new google.maps.Marker({
+    				  position:position,
+    				  icon:{
+						url : "/img/"+data.pokemon.PokemonId+".png",
+						scaledSize: new google.maps.Size(50, 50)
+					  }
+    				});
+                   }
+				marker[data.SpawnPointId].setMap(map);
+				setTimeout(function(){
+					marker[data.SpawnPointId].setMap(null);
+				},30000)
+			})
+			socket.on('item',function(data){
+				console.log('item',data)
+				show_console($("<span>").html("Get "+data.item_count+" "+item_type[data.item_id])
+					.append($("<img>").attr("src","/img/item/"+data.item_id+".png")
+										.css("width","40px"))
+				)
+
+				
+			})
+			socket.on('exp',function(data){
+				console.log('exp',data)
+				show_console("Get Experience "+data)
+				
+			})
+			socket.on('target',function(data){
+				console.log('target',data)
+
+				// $('div#console').prepend(
+				// 	$("<li>").html("Goto "+data.type+" "+
+				// 				(data.dist+"").substring(0,6)+" m")
+				// )
+				if(mark_target)
+					mark_target.setMap(null)
+				var position = new google.maps.LatLng(data.lat,data.lng);
+				mark_target = new google.maps.Marker({
+					position:position
+				})
+				mark_target.setMap(map);
+			})
+
+			socket.on('near pokemon',function(data){
+				// console.log('near pokemon',data)
+				// show_console($("<span>").html("There is "+data.name+" Near.")
+				// 		.append($("<img>").attr("src","/img/"+data.id+".png")
+				// 						.css("width","40px")
+				// 		)
+				// )
+
+				if((new Date()) - last_near > 2000)
+					$("div#nearby").html('Nearby > ')
+
+				$("div#nearby").append($("<img>").attr("src","/img/"+data.id+".png")
+										.css("width","40px")
+						)
+				last_near = new Date()
+				
+			})
+			setInterval(function(){
+				if(new Date() - last_near > 5000)
+					$("div#nearby").html('Nearby > ')
+			},10000);
+			socket.on('catch',function(data){
+				console.log('catch',data)
+				img = $("<img>")
+				if(data.pokemon.PokemonId){
+					img.attr("src","/img/"+data.pokemon.PokemonId+".png")
+				}else if(data.pokemon.PokedexTypeId){
+					img.attr("src","/img/"+data.pokemon.PokedexTypeId+".png")
+				}else if(data.pokemon.pokemon.PokemonId){
+					img.attr("src","/img/"+data.pokemon.pokemon.PokemonId+".png")
+				}else if(data.pokemon.pokemon.PokedexTypeId){
+					img.attr("src","/img/"+data.pokemon.pokemon.PokedexTypeId+".png")
+				}
+				img.css("width","40px")
+
+
+				if(data.status==1){
+					show_console($("<span>").html("Catched ")
+							.append(img)
+					)
+					if(data.data.CaptureAward){
+						if(data.data.CaptureAward.Candy)
+							show_console($("<span>").html("Get Candy "+data.data.CaptureAward.Candy[0]))
+						if(data.data.CaptureAward.Stardust)
+							show_console($("<span>").html("Get Stardust "+data.data.CaptureAward.Stardust[0]))
+						if(data.data.CaptureAward.XP)
+							show_console($("<span>").html("Get EXP "+
+								(data.data.CaptureAward.XP[0]+
+								data.data.CaptureAward.XP[1]+
+								data.data.CaptureAward.XP[2]))
+						)
+					}
+				}else{
+					show_console($("<span>").html(" Status "+data.status)
+							.append(img)
+					)
+				}
+				
+				if(marker[data.SpawnPointId])
+					marker[data.SpawnPointId].setMap(null);
+			})
+			socket.on('drop',function(data){
+				console.log('drop',data)
+				show_console($("<span>").html("Drop ")
+					.append($("<img>").attr("src","/img/item/"+data.item_id+".png")
+										.css("width","40px"))
+					.append("remain"+data.item_count)
+				)
+			})
+			setcenter=0;
+			Fmarker = null;
+			function getcoord(){
+				socket.emit('coord','');
+				setTimeout(function(){if(!CMarker)
+					getcoord();		
+				},2000)
+			}
+			getcoord();	
+			setTimeout(function(){
+				socket.emit('get ford','');
+			},5000);
+		});
+        </script>
+        <style>
+            div.right,
+	div.top{
+		display: inline-block;
+		height:40px;
+		width: 800px;
+	}
+	div.left{
+		display: inline-block;
+		overflow: auto;
+		width: 800px;
+	}
+	div.right{
+		height:300px;
+	}
+	div#googleMap{
+		width:800px;height:400px;display:inharit
+	}
+	div#console{
+		height:300px;style="display:inline-block;
+	}
+        </style>
+    </head>
+    <body style="display:inline-block">
+        <div class="top" id="nearby">
+            Nearby >
+        </div>
+        <div class="left">
+            <div id="googleMap">
+            </div>
+        </div>
+        <div class="right">
+            <div id="console" style="width:40%px;display:inline-block">
+            </div>
+        </div>
+    </body>
+</html>
